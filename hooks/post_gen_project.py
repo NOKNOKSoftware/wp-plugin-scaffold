@@ -1,13 +1,19 @@
 import os
 import shutil
 
+workingDirectory = os.getcwd()
+
 {% for name, settings in cookiecutter.sass_projects|dictsort %}
 
-path = "./assets/sass/{{ name }}/"
+# Resolve Paths
+path = os.path.join( workingDirectory, "assets/sass/{{name}}" )
+file = os.path.join( path, "{{ name }}.scss" )
+
+# Remove Directory if already exists
 shutil.rmtree( path, ignore_errors=True)
 os.mkdir(path)
 
-file = "./assets/sass/{{ name }}/{{ name }}.scss"
+# Create empty scss file
 open( file, 'a' ).close()
 
 {% endfor %}
@@ -15,11 +21,15 @@ open( file, 'a' ).close()
 
 {% for name, settings in cookiecutter.js_projects|dictsort %}
 
-path = "./assets/js/{{ name }}/"
+# Resolve Paths
+path = os.path.join( workingDirectory, "assets/js/{{name}}" )
+file = os.path.join( path, "{{ name }}.js" )
+
+# Remove Directory if already exists
 shutil.rmtree( path, ignore_errors=True)
 os.mkdir(path)
 
-file = "./assets/js/{{ name }}/{{ name }}.js"
+# Create empty js file
 open( file, 'a' ).close()
 
 {% endfor %}

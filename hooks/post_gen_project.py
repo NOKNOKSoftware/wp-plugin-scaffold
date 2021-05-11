@@ -1,5 +1,6 @@
 import os
 import shutil
+import pathlib
 
 workingDirectory = os.getcwd()
 
@@ -11,7 +12,7 @@ file = os.path.join( path, "{{ name }}.scss" )
 
 # Remove Directory if already exists
 shutil.rmtree( path, ignore_errors=True)
-os.mkdir(path)
+pathlib.Path( path ).mkdir(parents=True)
 
 # Create empty scss file
 open( file, 'a' ).close()
@@ -27,7 +28,8 @@ file = os.path.join( path, "{{ name }}.js" )
 
 # Remove Directory if already exists
 shutil.rmtree( path, ignore_errors=True)
-os.mkdir(path)
+pathlib.Path( path ).mkdir(parents=True)
+
 
 # Create empty js file
 open( file, 'a' ).close()

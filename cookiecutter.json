@@ -1,0 +1,30 @@
+{
+    "plugin_name": "WP Plugin Scaffold",
+    "plugin_slug": "wp-plugin-scaffold",
+    "plugin_description": "",
+    "plugin_namespace": "WPPluginScaffold",
+    "author_name": "NOKNOK Studios",
+    "author_uri": "https://noknokstudios.com",
+    "text_domain": "plugin-scaffold",
+    "constant_prefix": "WP_PLUGIN_SCAFFOLD",
+    "function_prefix": "ps",
+    "github_plugin_uri": "",
+    "use_prefixer": 1,
+    "prefixer_namespace": "PluginScaffoldLibs",
+    "sass_projects": {
+        "frontend": {
+            "hooks": [ "wp_enqueue_scripts" ]
+        },
+        "backend": {
+            "hooks": [ "admin_enqueue_scripts" ]
+        }
+    },
+    "js_projects": {
+        "frontend": {
+            "hooks": [ "wp_enqueue_scripts" ]
+        },
+        "backend": {
+            "hooks": [ "admin_enqueue_scripts" ]
+        }
+    }
+}

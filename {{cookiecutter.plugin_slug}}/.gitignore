@@ -1,0 +1,6 @@
+assets/dist/
+components/
+node_modules/
+vendor/
+build/
+languages/*.mo

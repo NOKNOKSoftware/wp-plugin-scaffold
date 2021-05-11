@@ -22,6 +22,8 @@
 {%- endif %}
  */
 
+use {{ cookiecutter.plugin_namespace }}\PluginLoader;
+
 if( !defined( 'ABSPATH' ) ) exit;
 
 define( "{{ cookiecutter.constant_prefix }}_TEXT_DOMAIN", "{{ cookiecutter.text_domain }}" );
@@ -41,7 +43,7 @@ $autoload_files_cache = array(); // Flush again to prevent a future conflict
 {%- endif %}
 
 function {{ cookiecutter.function_prefix }}_loaded() {
-
+    PluginLoader::init();
 }
 
 add_action( '{{ cookiecutter.function_prefix }}_loaded', '{{ cookiecutter.function_prefix }}_loaded' );

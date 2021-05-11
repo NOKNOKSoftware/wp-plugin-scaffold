@@ -6,7 +6,7 @@ workingDirectory = os.getcwd()
 {% for name, settings in cookiecutter.sass_projects|dictsort %}
 
 # Resolve Paths
-path = os.path.join( workingDirectory, "assets/sass/{{name}}" )
+path = os.path.join( workingDirectory, "assets", "sass", "{{name}}" )
 file = os.path.join( path, "{{ name }}.scss" )
 
 # Remove Directory if already exists
@@ -22,7 +22,7 @@ open( file, 'a' ).close()
 {% for name, settings in cookiecutter.js_projects|dictsort %}
 
 # Resolve Paths
-path = os.path.join( workingDirectory, "assets/js/{{name}}" )
+path = os.path.join( workingDirectory, "assets", "js", "{{name}}" )
 file = os.path.join( path, "{{ name }}.js" )
 
 # Remove Directory if already exists

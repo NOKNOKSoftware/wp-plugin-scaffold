@@ -12,7 +12,7 @@ WP Plugin Scaffold uses [cookiecutter](https://github.com/cookiecutter/cookiecut
 
 Use the following command to get started.
 ``` SHELL
-python -m cookiecutter https://github.com/NOKNOKdesign/wp-plugin-scaffold
+python -m cookiecutter https://github.com/NOKNOKSoftware/wp-plugin-scaffold
 ```
 
 ## Gulp Sass

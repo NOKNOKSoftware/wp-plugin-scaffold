@@ -147,7 +147,7 @@ gulp.task('premajor:nogit',   () => bumpVersion( 'premajor', false, VERSION_FILE
 } );
 
 // Compile .po files to .mo
-const PO_SRC = 'languages/**/*.po';
+const PO_SRC = 'languages/*.po';
 
 gulp.task( 'build:gettext', () => {
     return gulp.src( PO_SRC )

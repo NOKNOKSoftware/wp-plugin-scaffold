@@ -128,4 +128,30 @@ Gulp Bump will look for version numbers in these files and automatically increme
 | gulp premajor | 0.7.3 ->  1.0.0-alpha.0 | Bump version number to a new major prerelease number |
 | gulp major | 1.2.2 -> 2.0.0 | Bump version number to a new major release |
  
+ ## Git Intergration
+By default, each auto-versioning command will make the version changes to each file, commit the changes and tag the commit with the new release number. If you'd prefer to manage this yourself or you're only bumping numbers for testing purposes you can append ":nogit" to each of the commands above to omit this.
+
+## Addressing Dependency Conflicts with PHP Scoper
+Dependency Management with WordPress is a nightmare. While we could discuss why, Yoast SEO present an [incredibly good article](https://developer.yoast.com/blog/safely-using-php-dependencies-in-the-wordpress-ecosystem/) detailing the problem already. While our solution differs slightly from Yoast's (that being that Yoast prefer to prefix just their dependencies and we prefer to scope the entire project) both solutions offer an "okay-ish" method of addressing this problem. Our solution is a more hands off approach. We let you add / remove dependencies and generally use composer however you want in a development environment where conflicts aren't really to be expected. Then when you push a new version of your plugin after using the gulp versioning commands above, your plugin's github workflow file will take on the responsibility of building out all your plugin assets, scoping the entire project under your defined prefix, and removing dev dependencies from composer and node. It will then package your now built plugin into a tidy zip file and tag it under a new github release automatically.
+
+### Setting Prefixer Namespace Prefix
+It's recommended you use a prefixer namespace unique to your plugin. This is to prevent a dependency conflict between plugins that share the same prefix.
+``` JSON
+    "use_prefixer": 1,
+    "prefixer_namespace": "MyUniquePluginNamespace",
+```
+
+### Disabiling PHP-Scoper
+You can remove PHP-Scoper from your plugin's build process during setup by specifying "0" in your cookiecutter.json
+``` JSON
+    "use_prefixer": 0,
+    "prefixer_namespace": "",
+```
+
+### Addressing bugs caused by scoper process
+Occasionally some dependencies will reference classnames by statically coded strings which can't be interperated correctly by PHP Scoper. This often causes problems with PHP code refering to classes that don't exist. Often you can resolve this by adding a [custom patcher](https://github.com/humbug/php-scoper#patchers) to your scoper.inc.php file.
+
+If you're having issues with PHP Scoper prefixing global functions provided by other plugins, you can look at your existing scoper.inc.php file for examples on how to add external plugin stubs to PHP Scoper.
+
+
 

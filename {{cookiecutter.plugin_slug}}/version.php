@@ -10,4 +10,4 @@ $version_json = '
     }
 ';
 
-define( '{{ cookiecutter.constant_prefix }}VERSION', json_decode( $version_json )->version );
+define( '{{ cookiecutter.constant_prefix }}_VERSION', json_decode( $version_json )->version );

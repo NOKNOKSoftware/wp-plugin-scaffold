@@ -8,7 +8,12 @@ class PluginLoader {
     protected static $instance;
 
     function __construct() {
+        
+        // Enqueue Scripts
+        new PluginScripts();
+
         // Start building your plugin here
+
     }
 
     static function init() {

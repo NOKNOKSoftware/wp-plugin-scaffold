@@ -13,18 +13,24 @@
     "prefixer_namespace": "PluginScaffoldLibs",
     "sass_projects": {
         "frontend": {
-            "hooks": [ "wp_enqueue_scripts" ]
+            "hooks": [ "wp_enqueue_scripts" ],
+            "depends": []
         },
         "backend": {
-            "hooks": [ "admin_enqueue_scripts" ]
+            "hooks": [ "admin_enqueue_scripts" ],
+            "depends": []
         }
     },
     "js_projects": {
         "frontend": {
-            "hooks": [ "wp_enqueue_scripts" ]
+            "hooks": [ "wp_enqueue_scripts" ],
+            "depends": [ "jquery" ],
+            "footer": true
         },
         "backend": {
-            "hooks": [ "admin_enqueue_scripts" ]
+            "hooks": [ "admin_enqueue_scripts" ],
+            "depends": [ "jquery" ],
+            "footer": true
         }
     }
 }

@@ -96,7 +96,8 @@ const VERSION_FILES = [
     'version.php',
     'package.json',
     'package-lock.json',
-    'style.css'
+    'composer.json',
+    '{{cookiecutter.plugin_slug}}-plugin.php'
 ];
 
 gulp.task('prerelease',       () => bumpVersion( 'prerelease', true, VERSION_FILES ) );

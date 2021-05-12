@@ -8,7 +8,7 @@ WordPress plugin scaffolding done the NOKNOK way.
 - [Composer](https://getcomposer.org/download/)
 
 # Getting Started
-WP Plugin Scaffold uses [cookiecutter](https://github.com/cookiecutter/cookiecutter) to generate themes. 
+WP Plugin Scaffold uses [cookiecutter](https://github.com/cookiecutter/cookiecutter) to generate plugins. 
 
 Use the following command to get started.
 ``` SHELL

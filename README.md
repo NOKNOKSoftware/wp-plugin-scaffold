@@ -131,6 +131,39 @@ Gulp Bump will look for version numbers in these files and automatically increme
  ## Git Intergration
 By default, each auto-versioning command will make the version changes to each file, commit the changes and tag the commit with the new release number. If you'd prefer to manage this yourself or you're only bumping numbers for testing purposes you can append ":nogit" to each of the commands above to omit this.
 
+## Internationalization, Pot Files and Compiling gettext
+Internationalization support is baked into each project. Each project will have it's own set of shorthand translation functions that wrap WordPress' own offical translation functions in your text domain.
+
+Here's an expected set of translation functions (Replace "ps" with your projects function prefix)
+
+| Scaffolded Function | WP Function | Description |
+| -------- | ----------- | ----------- |
+| ps__( $text ) | [__( $text, $domain )](https://developer.wordpress.org/reference/functions/__/) | Retrieve the translation of $text. |
+| ps_esc_attr__( $text ) | [esc_attr__( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_attr__/) | Retrieve the translation of $text and escapes it for safe use in an attribute. |
+| ps_esc_html__( $text ) | [esc_html__( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_html__/) | Retrieve the translation of $text and escapes it for safe use in HTML output. |
+| ps_e( $text ) | [_e( $text, $domain )](https://developer.wordpress.org/reference/functions/_e/) | Display translated text. |
+| ps_esc_attr_e( $text ) | [esc_attr_e( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_attr_e/) | Display translated text that has been escaped for safe use in an attribute. |
+| ps_esc_html_e( $text ) | [esc_html_e( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_html_e/) | Display translated text that has been escaped for safe use in HTML output. |
+| ps_x( $text, $context ) | [_x( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/_x/) | Retrieve translated string with gettext context. |
+| ps_ex( $text, $context ) | [_ex( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/_ex/) | Display translated string with gettext context. |
+| ps_esc_attr_x( $text, $context ) | [esc_attr_x( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/esc_attr_x/) | Translate string with gettext context, and escapes it for safe use in an attribute. |
+| ps_esc_html_x( $text, $context ) | [esc_html_x( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/esc_html_x/) | Translate string with gettext context, and escapes it for safe use in HTML output. |
+| ps_n( $single, $plural, $number ) | [_n( $single, $plural, $number, $domain )](https://developer.wordpress.org/reference/functions/_n/) | Translates and retrieves the singular or plural form based on the supplied number. |
+| ps_nx( single, plural, $number, $context ) | [_nx( $single, $plural, $number, $context, $domain )](https://developer.wordpress.org/reference/functions/_nx/) | Translates and retrieves the singular or plural form based on the supplied number, with gettext context. |
+
+### Building your plugins POT file.
+A pot file is template for your plugins translations. By using the functions detailed above you can automatically generate your plugins pot file with the following gulp command.
+| Command | Description |
+| ------- | ----------- |
+| gulp build:wp-pot | Scans plugin for translations and generates .POT file under languages/[plugin-name].pot |
+
+### Compiling your translations
+Use the following commands to build / watch your translation file (.PO file) for compilation (.MO file)
+| Command | Description | 
+| ------- | ----------- | 
+| gulp build:gettext | Compile MO files for all PO files contained in "/languages" |
+| gulp watch:gettext | Watch PO files in "/languages" and compile when changes are made |
+
 ## Addressing Dependency Conflicts with PHP Scoper
 Dependency Management with WordPress is a nightmare. While we could discuss why, Yoast SEO present an [incredibly good article](https://developer.yoast.com/blog/safely-using-php-dependencies-in-the-wordpress-ecosystem/) detailing the problem already. While our solution differs slightly from Yoast's (that being that Yoast prefer to prefix just their dependencies and we prefer to scope the entire project) both solutions offer an "okay-ish" method of addressing this problem. Our solution is a more hands off approach. We let you add / remove dependencies and generally use composer however you want in a development environment where conflicts aren't really to be expected. Then when you push a new version of your plugin after using the gulp versioning commands above, your plugin's github workflow file will take on the responsibility of building out all your plugin assets, scoping the entire project under your defined prefix, and removing dev dependencies from composer and node. It will then package your now built plugin into a tidy zip file and tag it under a new github release automatically.
 

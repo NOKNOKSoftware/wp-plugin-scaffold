@@ -158,7 +158,7 @@ A pot file is template for your plugins translations. By using the functions det
 | gulp build:wp-pot | Scans plugin for translations and generates .POT file under languages/[plugin-name].pot |
 
 ### Compiling your translations
-Use the following commands to build / watch your translation file (.PO file) for compilation (.MO file)
+Use the following commands to build / watch your translation file (.PO file) for compilation (.MO file). These commands are also included in the global gulp build / watch commands.
 | Command | Description | 
 | ------- | ----------- | 
 | gulp build:gettext | Compile MO files for all PO files contained in "/languages" |

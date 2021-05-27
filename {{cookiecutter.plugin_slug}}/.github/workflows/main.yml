@@ -59,6 +59,9 @@ jobs:
           ssh_key: ${{ secrets.NOKNOK_DEPLOY_RSA }}
           ssh_key_pub: ${{ secrets.NOKNOK_DEPLOY_RSA_PUB }}
           php_version: 7.4
+{%- endraw -%}
+{% if cookiecutter.use_prefixer|int -%}
+  {%- raw %}
           
       # Setup PHP
       - name: Setup PHP
@@ -71,7 +74,10 @@ jobs:
         run: |
           php bin/php-scoper.phar add-prefix --output-dir ${{ steps.vars.outputs.repoName }}
           composer dump-autoload --working-dir ${{ steps.vars.outputs.repoName }}
-
+  {%- endraw -%}
+{% endif -%}
+{%- raw %}
+          
       # Remove Composer dev dependencies
       - name: Composer Prune for Production
         run: |

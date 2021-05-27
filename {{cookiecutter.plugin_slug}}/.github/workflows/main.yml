@@ -20,6 +20,7 @@ jobs:
         id: vars
         run: |
           echo ::set-output name=tagName::${GITHUB_REF#refs/*/}
+          echo ::set-output name=repoName::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")
           
       # Setup Node JS Environment to use gulp
       - name: Install NodeJS Dependencies

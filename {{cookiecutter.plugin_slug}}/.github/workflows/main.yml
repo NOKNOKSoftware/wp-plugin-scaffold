@@ -52,18 +52,16 @@ jobs:
         with:
           path: /tmp/composer-cache
           key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+{%- endraw -%}
+{% if cookiecutter.use_prefixer|int -%}
+  {%- raw %}
           
       # Install Composer Environment
       - name: Install Composer
         uses: php-actions/composer@v5
         with:
-          ssh_key: ${{ secrets.NOKNOK_DEPLOY_RSA }}
-          ssh_key_pub: ${{ secrets.NOKNOK_DEPLOY_RSA_PUB }}
           php_version: 7.4
-{%- endraw -%}
-{% if cookiecutter.use_prefixer|int -%}
-  {%- raw %}
-          
+
       # Setup PHP
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -74,16 +72,30 @@ jobs:
       - name: Prefix Project (PHP Scoper)
         run: |
           php bin/php-scoper.phar add-prefix --output-dir ${{ steps.vars.outputs.repoName }}
+          composer --no-dev install --working-dir ${{ steps.vars.outputs.repoName }}
           composer dump-autoload --working-dir ${{ steps.vars.outputs.repoName }}
-  {%- endraw -%}
-{% endif -%}
-{%- raw %}
-          
-      # Remove Composer dev dependencies
-      - name: Composer Prune for Production
+
+      # Create the plugin zipfile
+      - name: Create Theme/Plugin zipfile
         run: |
-          composer --no-dev update
-          composer dump-autoload -o
+          shopt -s extglob
+          rm ./${{ steps.vars.outputs.repoName }}/composer.json
+          rm ./${{ steps.vars.outputs.repoName }}/composer.lock
+          sudo mv !(.|..|${{ steps.vars.outputs.repoName }}|.git*|composer.*|gulpfile.js|gulpsetup.js|package*.json|vendor|src|templates|bin|*.php|docker_tag|output.log) ./${{ steps.vars.outputs.repoName }}/
+          zip -qq -r ${{ steps.vars.outputs.repoName }}.zip ./${{ steps.vars.outputs.repoName }}
+  
+  {%- endraw -%}
+{%- else %}
+  {%- raw %}
+
+      # Install Composer Environment
+      - name: Install Composer
+        uses: php-actions/composer@v5
+        with:
+          ssh_key: ${{ secrets.NOKNOK_DEPLOY_RSA }}
+          ssh_key_pub: ${{ secrets.NOKNOK_DEPLOY_RSA_PUB }}
+          php_version: 7.4
+          with: composer --no-dev install
 
       # Create the plugin zipfile
       - name: Create Theme/Plugin zipfile
@@ -92,7 +104,12 @@ jobs:
           mkdir ${{ steps.vars.outputs.repoName }}
           sudo mv !(.|..|${{ steps.vars.outputs.repoName }}|.git*|composer.*|gulpfile.js|gulpsetup.js|package*|scoper.inc.php) ./${{ steps.vars.outputs.repoName }}/
           zip -qq -r ${{ steps.vars.outputs.repoName }}.zip ./${{ steps.vars.outputs.repoName }}
-      
+
+  
+  {%- endraw -%}
+{% endif -%}
+{%- raw %}
+
       # Create Release
       - name: Create Release
         id: create_release

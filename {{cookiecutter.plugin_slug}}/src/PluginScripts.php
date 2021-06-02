@@ -3,7 +3,7 @@ namespace {{ cookiecutter.plugin_namespace }};
 
 if( !defined( 'ABSPATH' ) ) exit;
 
-class PluginLoader {
+class PluginScripts {
 
     function __construct() {
         // Enqueue CSS

@@ -31,9 +31,20 @@ define( "{{ cookiecutter.constant_prefix }}_DIR", plugin_dir_path( __FILE__ ) );
 define( "{{ cookiecutter.constant_prefix }}_URL", plugin_dir_url( __FILE__ ) );
 define( "{{ cookiecutter.constant_prefix }}_FILE", __FILE__ );
 
+// Defines {{ cookiecutter.constant_prefix }}_VERSION constant
+require {{ cookiecutter.constant_prefix }}_DIR . 'version.php';
+
 {% if cookiecutter.use_prefixer|int -%}
 $autoload_files_cache = &$GLOBALS['__composer_autoload_files']; // Get Autoload Files Cache ByRef
 $autoload_files_cache = array(); // Flush composers file identifier cache so we can reload identical ID's
+{%- endif -%}
+
+require NCW_DIR . 'vendor/autoload.php';
+
+{% if cookiecutter.use_prefixer|int -%}
+// Flush again for future 
+$autoload_files_cache = array();
+
 {%- endif -%}
 
 require_once {{ cookiecutter.constant_prefix }}_TEXT_DOMAIN . 'vendor/autoload.php';
@@ -41,6 +52,8 @@ require_once {{ cookiecutter.constant_prefix }}_TEXT_DOMAIN . 'vendor/autoload.p
 {%- if cookiecutter.use_prefixer|int -%}
 $autoload_files_cache = array(); // Flush again to prevent a future conflict
 {%- endif %}
+
+require_once {{ cookiecutter.constant_prefix }}_TEXT_DOMAIN . '{{cookiecutter.plugin_slug}}-functions.php';
 
 function {{ cookiecutter.function_prefix }}_loaded() {
     PluginLoader::init();

@@ -13,16 +13,15 @@ define( 'ABSPATH', true );
 
 // These stubs will be scanned for global functions. These functions will not 
 // be prefixed when they are used
-$identifiers = (new IdentifierExtractor())
+$extractor = (new IdentifierExtractor())
     ->addStub('vendor/php-stubs/wordpress-stubs/wordpress-stubs.php')
     ->addStub('vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php')
-    ->addStub('vendor/paulthewalton/acf-pro-stubs/acf-pro-stubs.php')
-    ->extract();
+    ->addStub('vendor/paulthewalton/acf-pro-stubs/acf-pro-stubs.php');
 
 // Track our own functions files and add them as stubs
 $functions_files = [
-    'noknok-test-plugin-functions.php',
-    'noknok-test-plugin-plugin.php'
+    '{{cookiecutter.plugin_slug}}-functions.php',
+    '{{cookiecutter.plugin_slug}}-plugin.php'
 ];
 
 foreach( $functions_files as $functions_file ) {

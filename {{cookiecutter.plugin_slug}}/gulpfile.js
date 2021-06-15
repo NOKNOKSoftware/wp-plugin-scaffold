@@ -127,7 +127,7 @@ gulp.task('premajor:nogit',   () => bumpVersion( 'premajor', false, VERSION_FILE
 
 // Evaluates PHP source code and generates a "languages/{{ cookiecutter.plugin_slug }}.pot" template file
  gulp.task( 'build:wp-pot', function() {
-    return gulp.src( [ 'src/**/*.php', '{{ cookiecutter.plugin_slug }}-plugin.php' ] )
+    return gulp.src( [ 'src/**/*.php', 'templates/**/*.php', '{{ cookiecutter.plugin_slug }}-plugin.php' ] )
         .pipe(wpPot( {
             gettextFunctions: [
                 { name: '{{ cookiecutter.function_prefix }}__' },

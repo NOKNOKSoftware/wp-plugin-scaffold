@@ -41,19 +41,18 @@ $autoload_files_cache = array(); // Flush composers file identifier cache so we 
 
 require NCW_DIR . 'vendor/autoload.php';
 
-{% if cookiecutter.use_prefixer|int -%}
+{%- if cookiecutter.use_prefixer|int %}
 // Flush again for future 
 $autoload_files_cache = array();
+{%- endif %}
 
-{%- endif -%}
+require_once {{ cookiecutter.constant_prefix }}_DIR . 'vendor/autoload.php';
 
-require_once {{ cookiecutter.constant_prefix }}_TEXT_DOMAIN . 'vendor/autoload.php';
-
-{%- if cookiecutter.use_prefixer|int -%}
+{%- if cookiecutter.use_prefixer|int %}
 $autoload_files_cache = array(); // Flush again to prevent a future conflict
 {%- endif %}
 
-require_once {{ cookiecutter.constant_prefix }}_TEXT_DOMAIN . '{{cookiecutter.plugin_slug}}-functions.php';
+require_once {{ cookiecutter.constant_prefix }}_DIR . '{{cookiecutter.plugin_slug}}-functions.php';
 
 function {{ cookiecutter.function_prefix }}_loaded() {
     PluginLoader::init();

@@ -4,23 +4,23 @@
 ## Sass Tasks
 Build or Watch sass projects with the following commands;
 - gulp build
-- gulp build-css
+- gulp build:css
 - gulp watch
-- gulp watch-css
+- gulp watch:css
 {%- for name, settings in cookiecutter.sass_projects|dictsort %}
-- gulp build-css:{{name}}
-- gulp watch-css:{{name}}
+- gulp build:css:{{name}}
+- gulp watch:css:{{name}}
 {%- endfor %}
 
 ## Gulp JS - Babel Compilation
 Build or Watch JS projects using the @babel/preset-env preset with the following commands:
 - gulp build
-- gulp build-js
+- gulp build:js
 - gulp watch
-- gulp watch-js
+- gulp watch:js
 {%- for name, settings in cookiecutter.js_projects|dictsort %}
-- gulp build-js:{{name}}
-- gulp watch-js:{{name}}
+- gulp build:js:{{name}}
+- gulp watch:js:{{name}}
 {%- endfor %}
 
 
@@ -68,6 +68,7 @@ Generate the .POT file for this plugin using the following command.
 | Command | Description |
 | ------- | ----------- |
 | gulp build:wp-pot | Scans plugin for translations and generates .POT file under languages/{{ cookiecutter.plugin_slug }}.pot |
+| gulp watch:wp-pot | Watches for changes to translations in PHP files and automatically generates .POT file under languages/{{ cookiecutter.plugin_slug }}.pot |
 
 ### Compiling your translations
 Use the following commands to build / watch translations (.PO file) for compilation (.MO file). These commands are also included in the global gulp build / watch commands.

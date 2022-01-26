@@ -18,11 +18,9 @@ python -m cookiecutter https://github.com/NOKNOKSoftware/wp-plugin-scaffold
 ## Gulp Sass
 Sass Compilation is made easy through the use of gulp. The following gulp commands have been added to help build and watch sass files for live compilation.
 - gulp build
-- gulp build-css
-- gulp build-css:<project_name>
+- gulp build:css:<project_name>
 - gulp watch
-- gulp watch-css
-- gulp watch-css:<project_name>
+- gulp watch:css:<project_name>
 
 The following JSON file is used to generate a blank source project, gulp tasks and WordPress loader for each project. 
 
@@ -57,11 +55,9 @@ Similarily to the Sass implementation above. JS building is also made easy throu
 
 The following gulp commands have been added to help build and watch your JS project files for live compilation.
 - gulp build
-- gulp build-js
-- gulp build-js:<project_name>
+- gulp build:js:<project_name>
 - gulp watch
-- gulp watch-js
-- gulp watch-js:<project_name>
+- gulp watch:js:<project_name>
 
 The following JSON file is used to generate a blank source project, gulp tasks and WordPress loader for each project. 
 
@@ -97,35 +93,30 @@ A breakdown of each arg is as follows.
 ## Auto Symantic Versioning
 WP Plugin Scaffold uses [symantic versioning](https://semver.org/). For this reason, we can use [gulp bump](https://www.npmjs.com/package/gulp-bump) to automatically bump version numbers amoung our files.
 
-The list of files affected by this bump can be found in your gulpfile.js
+The list of default files affected by this bump can be found in your gulp-loader.js
 ``` JavaScript
-
-/** ----------------------------------------------------------------------------------------
- * 
- *  Versioning
- * 
- * ---------------------------
-
-const VERSION_FILES = [
-    'version.php',
-    'package.json',
-    'package-lock.json',
-    'composer.json',
-    '{{cookiecutter.plugin_slug}}-plugin.php'
-];
-
+    function addBumpVersion( {
+        versionFiles = [
+            'version.php',
+            'package.json',
+            'package-lock.json',
+            'composer.json',
+            pluginName + '-plugin.php'
+        ]
+    } = {} ) {
+        // ...
 ```
 
 Gulp Bump will look for version numbers in these files and automatically increment them based on the command used. A breakdown of available bump commands in chronological order are as follows.
 
 | Command | Example | Description |
 | ------- | ------- | ----------- |
-| gulp prerelease | 0.0.1-alpha.1 -> 0.0.1-alpha.2 | Bump version number by a new prerelease version |
-| gulp prepatch | 0.0.1 -> 0.0.2-alpha.0 | Bump version number to a new patch number with prerelease version |
-| gulp patch | 0.0.2-alpha.4 -> 0.0.2 | Bump version number to a new patch number |
-| gulp preminor | 0.0.4 -> 0.1.0-alpha.0 | Bump version number to a new minor prerelease number |
+| gulp prerelease | 0.0.1-pre.1 -> 0.0.1-pre.2 | Bump version number by a new prerelease version |
+| gulp prepatch | 0.0.1 -> 0.0.2-pre.0 | Bump version number to a new patch number with prerelease version |
+| gulp patch | 0.0.2-pre.4 -> 0.0.2 | Bump version number to a new patch number |
+| gulp preminor | 0.0.4 -> 0.1.0-pre.0 | Bump version number to a new minor prerelease number |
 | gulp minor | 0.2.4 -> 0.3.0 | Bump version number to a new minor release number |
-| gulp premajor | 0.7.3 ->  1.0.0-alpha.0 | Bump version number to a new major prerelease number |
+| gulp premajor | 0.7.3 ->  1.0.0-pre.0 | Bump version number to a new major prerelease number |
 | gulp major | 1.2.2 -> 2.0.0 | Bump version number to a new major release |
  
  ## Git Intergration

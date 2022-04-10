@@ -29,7 +29,7 @@ Build or Watch JS projects using the @babel/preset-env preset with the following
 
 | Command | Example | Description |
 | ------- | ------- | ----------- |
-| gulp prerelease | 0.0.1-alpha.1 -> 0.0.1-pre.2 | Bump version number by a new prerelease version |
+| gulp prerelease | 0.0.1-pre.1 -> 0.0.1-pre.2 | Bump version number by a new prerelease version |
 | gulp prepatch | 0.0.1 -> 0.0.2-pre.0 | Bump version number to a new patch number with prerelease version |
 | gulp patch | 0.0.2-pre.4 -> 0.0.2 | Bump version number to a new patch number |
 | gulp preminor | 0.0.4 -> 0.1.0-pre.0 | Bump version number to a new minor prerelease number |

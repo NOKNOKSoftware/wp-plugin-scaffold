@@ -11,7 +11,7 @@
  * 
  * Plugin Name:         {{ cookiecutter.plugin_name }}
  * Description:         {{ cookiecutter.plugin_description }}
- * Version:             0.0.1-alpha.0
+ * Version:             0.0.1-prerelease.0
  * Author:              {{ cookiecutter.author_name }}
  * Author URI:          {{ cookiecutter.author_uri }}
  * Text Domain:         {{ cookiecutter.text_domain }}

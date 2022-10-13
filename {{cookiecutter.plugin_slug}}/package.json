@@ -1,5 +1,5 @@
 {
-    "version": "0.0.1-alpha.0",
+    "version": "0.0.1-prerelease.0",
     "devDependencies": {
         "@babel/core": "^7.16.12",
         "@babel/preset-env": "^7.16.11",
@@ -13,5 +13,12 @@
         "gulp-sourcemaps": "^3.0.0",
         "gulp-wp-pot": "^2.5.0",
         "sass": "^1.49.0"
+    },
+    "scripts": {
+        "ci": "npm ci",
+        "install": "npm install",
+        "update": "npm update",
+        "build": "gulp build",
+        "watch": "gulp watch"
     }
 }

@@ -18,16 +18,6 @@ $extractor = (new IdentifierExtractor())
     ->addStub('vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php')
     ->addStub('vendor/paulthewalton/acf-pro-stubs/acf-pro-stubs.php');
 
-// Track our own functions files and add them as stubs
-$functions_files = [
-    '{{cookiecutter.plugin_slug}}-functions.php',
-    '{{cookiecutter.plugin_slug}}-plugin.php'
-];
-
-foreach( $functions_files as $functions_file ) {
-    $extractor->addStub( $functions_file );
-}
-
 // Get array of function names
 $identifiers = $extractor->extract();
 
@@ -35,9 +25,13 @@ $identifiers = $extractor->extract();
 return [
     'prefix' => '{{ cookiecutter.prefixer_namespace }}',
     'finders' => [
+
+        // Source Files & Templates
         Finder::create()->files()
             ->in('src')
             ->in('templates'),
+
+        // Vendor files
         Finder::create()
             ->files()
             ->ignoreVCS(true)
@@ -49,8 +43,13 @@ return [
                 'tests',
                 'Tests',
                 'vendor-bin',
+                'bin',
+                'php-stubs',
+                'pxlrbt'
             ])
             ->in('vendor'),
+
+        // Files in root directory
         Finder::create()->append([
             '{{cookiecutter.plugin_slug}}-functions.php',
             '{{cookiecutter.plugin_slug}}-plugin.php',
@@ -58,7 +57,14 @@ return [
             'composer.json'
         ]),
     ],
-    'files-whitelist' => [ ],
+
+    'expose-global-constants' => true,
+    'expose-global-classes'   => true,
+    'expose-global-functions' => true,
+
+    'expose-namespaces'       => [
+        '{{cookiecutter.plugin_namespace}}'
+    ],
 
     'patchers' => [
         ( new RemovePrefixPatcher( $identifiers ) ),
@@ -75,7 +81,4 @@ return [
             return $content;
         } )
     ],
-    'whitelist-global-constants' => true,
-    'whitelist-global-classes' => true,
-    'whitelist-global-functions' => true,
 ];

@@ -1,0 +1,4 @@
+default_context:
+    package_slug: "{{cookiecutter.plugin_slug}}-admin"
+    jsx_scheme: "{{cookiecutter.admin_scripts_jsx_scheme}}"
+    use_post_css: "yes"

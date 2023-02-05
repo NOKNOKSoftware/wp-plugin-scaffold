@@ -1,0 +1,4 @@
+default_context:
+    package_slug: "{{cookiecutter.plugin_slug}}"
+    jsx_scheme: "{{cookiecutter.frontend_scripts_jsx_scheme}}"
+    use_post_css: "yes"

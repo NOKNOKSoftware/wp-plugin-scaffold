@@ -52,42 +52,6 @@ jobs:
         with:
           path: /tmp/composer-cache
           key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
-{%- endraw -%}
-{% if cookiecutter.use_prefixer|int -%}
-  {%- raw %}
-          
-      # Install Composer Environment
-      - name: Install Composer
-        uses: php-actions/composer@v5
-        with:
-          php_version: 7.4
-
-      # Setup PHP
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '7.4'
-
-      # Scope & Prefix entire project using PHP Scoper
-      - name: Prefix Project (PHP Scoper)
-        run: |
-          php bin/php-scoper.phar add-prefix --output-dir ${{ steps.vars.outputs.repoName }}
-          composer --no-dev install --working-dir ${{ steps.vars.outputs.repoName }}
-          composer dump-autoload --working-dir ${{ steps.vars.outputs.repoName }}
-
-      # Create the plugin zipfile
-      - name: Create Theme/Plugin zipfile
-        run: |
-          shopt -s extglob
-          rm ./${{ steps.vars.outputs.repoName }}/composer.json
-          rm ./${{ steps.vars.outputs.repoName }}/composer.lock
-          sudo mv !(.|..|${{ steps.vars.outputs.repoName }}|.git*|composer.*|gulpfile.js|gulpsetup.js|package*.json|vendor|src|templates|bin|*.php|docker_tag|output.log) ./${{ steps.vars.outputs.repoName }}/
-          zip -qq -r ${{ steps.vars.outputs.repoName }}.zip ./${{ steps.vars.outputs.repoName }}
-  
-  {%- endraw -%}
-{%- else %}
-  {%- raw %}
-
       # Install Composer Environment
       - name: Install Composer
         uses: php-actions/composer@v5
@@ -105,11 +69,6 @@ jobs:
           sudo mv !(.|..|${{ steps.vars.outputs.repoName }}|.git*|composer.*|gulpfile.js|gulpsetup.js|package*|scoper.inc.php) ./${{ steps.vars.outputs.repoName }}/
           zip -qq -r ${{ steps.vars.outputs.repoName }}.zip ./${{ steps.vars.outputs.repoName }}
 
-  
-  {%- endraw -%}
-{% endif -%}
-{%- raw %}
-
       # Create Release
       - name: Create Release
         id: create_release
@@ -120,7 +79,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           draft: false
-          prerelease: ${{ contains( github.ref, 'alpha' ) }}
+          prerelease: ${{ contains( github.ref, 'pre' ) }}
 
       # Upload Release
       - name: Upload Release Asset

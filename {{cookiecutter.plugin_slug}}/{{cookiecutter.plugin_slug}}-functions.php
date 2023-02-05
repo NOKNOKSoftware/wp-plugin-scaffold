@@ -50,34 +50,5 @@ function {{ cookiecutter.function_prefix }}_nx( $single, $plural, $number, $cont
     return _nx( $single, $plural, $number, $context, {{ cookiecutter.constant_prefix }}_TEXT_DOMAIN );
 }
 
-function {{ cookiecutter.function_prefix }}_get_template_part( $path, $args, $echo = true ) {
-    $template = {{ cookiecutter.function_prefix }}_locate_template( $path );
-    if( !$template ) {
-        throw new \Exception( "Could not locate template '$path'." );
-    }
-
-    if( !$echo ) {
-        ob_start();
-        include $template;
-        return ob_get_clean();
-    }
-
-    include $template;
-}
-
-function {{ cookiecutter.function_prefix }}_locate_template( $path ) {
-    $paths = [
-        get_stylesheet_directory() . '{{ cookiecutter.plugin_slug }}/' . $path . '.php',
-        get_template_directory() . '{{ cookiecutter.plugin_slug}}/' . $path . '.php',
-        {{ cookiecutter.constant_prefix }}_DIR . 'templates/' . $path . '.php'
-    ];
-
-    foreach( $paths as $path ) {
-        if( file_exists( $path ) ) return $path;
-    }
-
-    return false;
-}
-
 
 

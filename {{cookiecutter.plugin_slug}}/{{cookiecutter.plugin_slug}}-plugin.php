@@ -11,13 +11,14 @@
  * 
  * Plugin Name:         {{ cookiecutter.plugin_name }}
  * Description:         {{ cookiecutter.plugin_description }}
- * Version:             0.0.1-alpha.0
+ * Version:             0.0.1-pre.0
  * Author:              {{ cookiecutter.author_name }}
  * Author URI:          {{ cookiecutter.author_uri }}
  * Text Domain:         {{ cookiecutter.text_domain }}
  * Domain Path:         /languages 
-{%- if cookiecutter.github_plugin_uri %}
- * GitHub Plugin URI:   {{ cookiecutter.github_plugin_uri }}
+ * Requires PHP:        {{ cookiecutter.php_version }}
+{%- if cookiecutter.github_plugin_url %}
+ * GitHub Plugin URI:   {{ cookiecutter.github_plugin_url }}
  * Release Asset:       true
 {%- endif %}
  */
@@ -32,28 +33,13 @@ define( "{{ cookiecutter.constant_prefix }}_URL", plugin_dir_url( __FILE__ ) );
 define( "{{ cookiecutter.constant_prefix }}_FILE", __FILE__ );
 
 // Defines {{ cookiecutter.constant_prefix }}_VERSION constant
-require {{ cookiecutter.constant_prefix }}_DIR . 'version.php';
-
-{% if cookiecutter.use_prefixer|int -%}
-$autoload_files_cache = &$GLOBALS['__composer_autoload_files']; // Get Autoload Files Cache ByRef
-$autoload_files_cache = array(); // Flush composers file identifier cache so we can reload identical ID's
-{%- endif -%}
-
-require NCW_DIR . 'vendor/autoload.php';
-
-{%- if cookiecutter.use_prefixer|int %}
-// Flush again for future 
-$autoload_files_cache = array();
-{%- endif %}
-
+require_once {{ cookiecutter.constant_prefix }}_DIR . 'version.php';
+// Autoload dependencies
 require_once {{ cookiecutter.constant_prefix }}_DIR . 'vendor/autoload.php';
-
-{%- if cookiecutter.use_prefixer|int %}
-$autoload_files_cache = array(); // Flush again to prevent a future conflict
-{%- endif %}
-
+// Load plugin functions
 require_once {{ cookiecutter.constant_prefix }}_DIR . '{{cookiecutter.plugin_slug}}-functions.php';
 
+// Plugin init
 function {{ cookiecutter.function_prefix }}_loaded() {
     PluginLoader::init();
 }

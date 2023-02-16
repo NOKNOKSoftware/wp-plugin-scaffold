@@ -4,9 +4,10 @@ const git                   = require( 'gulp-git' );
 const bump                  = require( 'gulp-bump' );
 const filter                = require( 'gulp-filter' );
 const shell                 = require( 'gulp-shell' );
-const fetch                 = require( 'node-fetch' );
 const AdmZip                = require( 'adm-zip' );
 const fs                    = require( 'fs' );
+const wpPot                 = require( 'gulp-wp-pot' );
+const gettext               = require( 'gulp-gettext' );
 
 const { task, parallel }    = gulp;
 const { glob }              = require( 'glob' );
@@ -165,6 +166,7 @@ const PACK_GLOBS = [
     'assets/!(scss)/**',
     'src/',
     'vendor/',
+    'classes/',
     '*.php',
     'style.css',
     'screenshot.png'
@@ -217,6 +219,70 @@ gulp.task( 'pack', ( cb ) => {
     cb();
 
 } );
+
+
+/** ----------------------------------------------------------------------------------------
+ * 
+ *  Generate translations template wp-pot
+ * 
+ * -------------------------------------------------------------------------------------- */
+
+
+const TEXT_DOMAIN             = '{{cookiecutter.text_domain}}';
+const LANGUAGES_TEMPLATE_FILE = 'languages/{{cookiecutter.plugin_slug}}.pot';
+
+const PHP_SRC = [
+    './*.php',
+    './**/*.php'
+];
+
+const GETTEXT_FUNCTIONS = [
+    { name: 'ps__' },
+    { name: 'ps_esc_attr__' },
+    { name: 'ps_esc_html__' },
+    { name: 'ps_e' },
+    { name: 'ps_esc_attr_e' },
+    { name: 'ps_esc_html_e' },
+    { name: 'ps__x', context: 2 },
+    { name: 'ps_ex', context: 2 },
+    { name: 'ps_esc_attr_x', context: 2 },
+    { name: 'ps_esc_html_x', context: 2 },
+    { name: 'ps_n', plural: 2, context: 4 },
+    { name: 'ps_nx', plural: 2, context: 4 }
+]
+
+gulp.task( 'build:wp-pot', () => {
+    return gulp.src( PHP_SRC )
+        .pipe( wpPot( { 
+            // domain: '', 
+            gettextFunctions: GETTEXT_FUNCTIONS 
+        } ) )
+        .pipe( gulp.dest( LANGUAGES_TEMPLATE_FILE ) );
+} );
+
+
+gulp.task( 'watch:wp-pot', () => gulp.watch( PHP_SRC, parallel( 'build:wp-pot' ) ) );
+
+
+/** ----------------------------------------------------------------------------------------
+ * 
+ *  Compile translations (.po files)
+ * 
+ * -------------------------------------------------------------------------------------- */
+
+const LANGUAGES_SRC = 'languages/*.po';
+const LANGUAGES_DEST = 'lanuages';
+
+gulp.task( 'build:gettext', () => {
+    return gulp.src( LANGUAGES_SRC )
+        .pipe( gettext() )
+        .pipe( gulp.dest( LANGUAGES_DEST ) );
+} );
+
+
+gulp.task( 'watch:gettext', () => gulp.watch( LANGUAGES_SRC, parallel( 'build:gettext' ) ) );
+
+
 
 /** ----------------------------------------------------------------------------------------
  * 

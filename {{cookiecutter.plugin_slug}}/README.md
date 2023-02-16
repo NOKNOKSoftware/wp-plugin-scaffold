@@ -1,37 +1,3 @@
-# WP Plugin Scaffold
-WordPress plugin scaffolding done the NOKNOK way.
-
-- [WP Plugin Scaffold](#wp-plugin-scaffold)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-  - [Plugin stylesheet projects - SCSS bundling](#plugin-stylesheet-projects---scss-bundling)
-    - [Adding a new SCSS project](#adding-a-new-scss-project)
-    - [Removing a SCSS project](#removing-a-scss-project)
-  - [Typescript bundles](#typescript-bundles)
-    - [Adding a new typescript project](#adding-a-new-typescript-project)
-    - [Removing a typescript project](#removing-a-typescript-project)
-  - [Symantic versioning \& bump commands](#symantic-versioning--bump-commands)
-  - [Git Intergration](#git-intergration)
-    - [Plugin bundling workflow](#plugin-bundling-workflow)
-  - [Internationalization, Pot Files and Compiling gettext](#internationalization-pot-files-and-compiling-gettext)
-    - [Building your plugins POT file.](#building-your-plugins-pot-file)
-    - [Compiling your translations](#compiling-your-translations)
-  - [Avoiding dependency conflicts with other plugins by using Mozart](#avoiding-dependency-conflicts-with-other-plugins-by-using-mozart)
-
-
-# Prerequisites
-- [cookiecutter](https://github.com/cookiecutter/cookiecutter)
-- [git-scm](https://git-scm.com/downloads)
-- [Node Package Manager](https://git-scm.com/downloads)
-- [Composer](https://getcomposer.org/download/)
-
-# Getting Started
-WP Plugin Scaffold uses [cookiecutter](https://github.com/cookiecutter/cookiecutter) to generate plugins. 
-
-Use the following command to get started.
-``` SHELL
-python -m cookiecutter https://github.com/NOKNOKSoftware/wp-plugin-scaffold
-```
 
 ## Plugin stylesheet projects - SCSS bundling
 For custom / plugin styles. Two scss projects have been configured by default. For documentation on the scss bundler used see the [scss-web-bundler-scaffold](https://github.com/NOKNOKSoftware/scss-web-bundler-scaffold) repo.
@@ -52,12 +18,12 @@ To add a new SCSS project, run the setup commands for [scss-web-bundler-scaffold
 ``` JSON
 {
     "packages": [
-        "wp-plugin-scaffold-admin",
-        "wp-plugin-scaffold"
+        "{{cookiecutter.plugin_slug}}-admin",
+        "{{cookiecutter.plugin_slug}}"
     ],
     "scss": [
-        "wp-plugin-scaffold-admin",
-        "wp-plugin-scaffold",
+        "{{cookiecutter.plugin_slug}}-admin",
+        "{{cookiecutter.plugin_slug}}",
         "wp-custom-styles" // Added new
     ]
 }
@@ -71,12 +37,12 @@ To remove a unused SCSS project, delete the project directory and comment out or
 ``` JSON
 {
     "packages": [
-        "wp-plugin-scaffold-admin",
-        "wp-plugin-scaffold"
+        "{{cookiecutter.plugin_slug}}-admin",
+        "{{cookiecutter.plugin_slug}}"
     ],
     "scss": [
-        "wp-plugin-scaffold-admin",
-        // "wp-plugin-scaffold", <---- removed
+        "{{cookiecutter.plugin_slug}}-admin",
+        // "{{cookiecutter.plugin_slug}}", <---- removed
     ]
 }
 ```
@@ -102,13 +68,13 @@ To add a new typescript project, run the setup commands for [typescript-web-bund
 ``` JSON
 {
     "packages": [
-        "wp-plugin-scaffold-admin",
-        "wp-plugin-scaffold",
+        "{{cookiecutter.plugin_slug}}-admin",
+        "{{cookiecutter.plugin_slug}}",
         "wp-custom-scripts" // Added new
     ],
     "scss": [
-        "wp-plugin-scaffold-admin",
-        "wp-plugin-scaffold",
+        "{{cookiecutter.plugin_slug}}-admin",
+        "{{cookiecutter.plugin_slug}}",
     ]
 }
 ```
@@ -121,12 +87,12 @@ To remove a unused typescript project, delete the project directory and comment 
 ``` JSON
 {
     "packages": [
-        // "wp-plugin-scaffold-admin", <---- removed
-        "wp-plugin-scaffold"
+        // "{{cookiecutter.plugin_slug}}-admin", <---- removed
+        "{{cookiecutter.plugin_slug}}"
     ],
     "scss": [
-        "wp-plugin-scaffold-admin",
-        "wp-plugin-scaffold"
+        "{{cookiecutter.plugin_slug}}-admin",
+        "{{cookiecutter.plugin_slug}}"
     ]
 }
 ```
@@ -186,18 +152,18 @@ Here's an expected set of translation functions (Replace "ps" with your projects
 
 | Scaffolded Function | WP Function | Description |
 | -------- | ----------- | ----------- |
-| ps__( $text ) | [__( $text, $domain )](https://developer.wordpress.org/reference/functions/__/) | Retrieve the translation of $text. |
-| ps_esc_attr__( $text ) | [esc_attr__( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_attr__/) | Retrieve the translation of $text and escapes it for safe use in an attribute. |
-| ps_esc_html__( $text ) | [esc_html__( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_html__/) | Retrieve the translation of $text and escapes it for safe use in HTML output. |
-| ps_e( $text ) | [_e( $text, $domain )](https://developer.wordpress.org/reference/functions/_e/) | Display translated text. |
-| ps_esc_attr_e( $text ) | [esc_attr_e( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_attr_e/) | Display translated text that has been escaped for safe use in an attribute. |
-| ps_esc_html_e( $text ) | [esc_html_e( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_html_e/) | Display translated text that has been escaped for safe use in HTML output. |
-| ps_x( $text, $context ) | [_x( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/_x/) | Retrieve translated string with gettext context. |
-| ps_ex( $text, $context ) | [_ex( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/_ex/) | Display translated string with gettext context. |
-| ps_esc_attr_x( $text, $context ) | [esc_attr_x( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/esc_attr_x/) | Translate string with gettext context, and escapes it for safe use in an attribute. |
-| ps_esc_html_x( $text, $context ) | [esc_html_x( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/esc_html_x/) | Translate string with gettext context, and escapes it for safe use in HTML output. |
-| ps_n( $single, $plural, $number ) | [_n( $single, $plural, $number, $domain )](https://developer.wordpress.org/reference/functions/_n/) | Translates and retrieves the singular or plural form based on the supplied number. |
-| ps_nx( single, plural, $number, $context ) | [_nx( $single, $plural, $number, $context, $domain )](https://developer.wordpress.org/reference/functions/_nx/) | Translates and retrieves the singular or plural form based on the supplied number, with gettext context. |
+| {{cookiecutter.function_prefix}}__( $text ) | [__( $text, $domain )](https://developer.wordpress.org/reference/functions/__/) | Retrieve the translation of $text. |
+| {{cookiecutter.function_prefix}}_esc_attr__( $text ) | [esc_attr__( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_attr__/) | Retrieve the translation of $text and escapes it for safe use in an attribute. |
+| {{cookiecutter.function_prefix}}_esc_html__( $text ) | [esc_html__( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_html__/) | Retrieve the translation of $text and escapes it for safe use in HTML output. |
+| {{cookiecutter.function_prefix}}_e( $text ) | [_e( $text, $domain )](https://developer.wordpress.org/reference/functions/_e/) | Display translated text. |
+| {{cookiecutter.function_prefix}}_esc_attr_e( $text ) | [esc_attr_e( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_attr_e/) | Display translated text that has been escaped for safe use in an attribute. |
+| {{cookiecutter.function_prefix}}_esc_html_e( $text ) | [esc_html_e( $text, $domain )](https://developer.wordpress.org/reference/functions/esc_html_e/) | Display translated text that has been escaped for safe use in HTML output. |
+| {{cookiecutter.function_prefix}}_x( $text, $context ) | [_x( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/_x/) | Retrieve translated string with gettext context. |
+| {{cookiecutter.function_prefix}}_ex( $text, $context ) | [_ex( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/_ex/) | Display translated string with gettext context. |
+| {{cookiecutter.function_prefix}}_esc_attr_x( $text, $context ) | [esc_attr_x( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/esc_attr_x/) | Translate string with gettext context, and escapes it for safe use in an attribute. |
+| {{cookiecutter.function_prefix}}_esc_html_x( $text, $context ) | [esc_html_x( $text, $context, $domain )](https://developer.wordpress.org/reference/functions/esc_html_x/) | Translate string with gettext context, and escapes it for safe use in HTML output. |
+| {{cookiecutter.function_prefix}}_n( $single, $plural, $number ) | [_n( $single, $plural, $number, $domain )](https://developer.wordpress.org/reference/functions/_n/) | Translates and retrieves the singular or plural form based on the supplied number. |
+| {{cookiecutter.function_prefix}}_nx( single, plural, $number, $context ) | [_nx( $single, $plural, $number, $context, $domain )](https://developer.wordpress.org/reference/functions/_nx/) | Translates and retrieves the singular or plural form based on the supplied number, with gettext context. |
 
 ### Building your plugins POT file.
 A pot file is template for your plugins translations. By using the functions detailed above you can automatically generate your plugins pot file with the following gulp command.

@@ -100,7 +100,7 @@ const VERSION_FILES = [
     'version.php',
     'package.json',
     'package-lock.json',
-    'style.css'
+    '{{cookiecutter.plugin_slug}}-plugin.php'
 ];
 
 

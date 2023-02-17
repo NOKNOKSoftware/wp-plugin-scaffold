@@ -4,6 +4,7 @@ WordPress plugin scaffolding done the NOKNOK way.
 - [WP Plugin Scaffold](#wp-plugin-scaffold)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
+  - [Cookiecutter args breakdown](#cookiecutter-args-breakdown)
   - [Plugin stylesheet projects - SCSS bundling](#plugin-stylesheet-projects---scss-bundling)
     - [Adding a new SCSS project](#adding-a-new-scss-project)
     - [Removing a SCSS project](#removing-a-scss-project)
@@ -32,6 +33,20 @@ Use the following command to get started.
 ``` SHELL
 python -m cookiecutter https://github.com/NOKNOKSoftware/wp-plugin-scaffold
 ```
+
+## Cookiecutter args breakdown
+- ```plugin_name```: The name of your plugin in plain text
+- ```plugin_slug```: The slug for your plugin ```in-snake-case```
+- ```plugin_description```: Plain text description of what your plugin does.
+- ```plugin_namespace```: ```ACamelCase``` default namespace for you PHP classes
+- ```author_name```: The authors name
+- ```author_uri```: The authors website url
+- ```text_domain```: The default text domain for your plugin
+- ```constants_prefix```: A prefix used for any automatically generated constants e.g ```MY_PLUGIN_VERSION```
+- ```function_prefix``` A prefix used for any automatically generated functions e.g ```mp__( 'Some text' )```
+- ```github_plugin_url``` The URL for your plugins repository. Also adds direct support for the [Github Updater Plugin](prefixer_namespace)
+- ```frontend_scripts_jsx_scheme``` Chooses the JSX scheme for the frontend scripts project. If you don't plan to use React / JSX you can just specify none (0) or if you want to use wordpress' built in react for gutenberg specify wp-element (4). For more information see Typescript bundling below.
+- ```frontend_scripts_jsx_scheme``` Chooses the JSX scheme for the wp-admin scripts project. If you don't plan to use React / JSX you can just specify none (0) or if you want to use wordpress' built in react for gutenberg specify wp-element (4). For more information see Typescript bundling below.
 
 ## Plugin stylesheet projects - SCSS bundling
 For custom / plugin styles. Two scss projects have been configured by default. For documentation on the scss bundler used see the [scss-web-bundler-scaffold](https://github.com/NOKNOKSoftware/scss-web-bundler-scaffold) repo.

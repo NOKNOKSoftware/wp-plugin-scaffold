@@ -1,3 +1,4 @@
+# {{cookiecutter.plugin_name}}
 
 ## Plugin stylesheet projects - SCSS bundling
 For custom / plugin styles. Two scss projects have been configured by default. For documentation on the scss bundler used see the [scss-web-bundler-scaffold](https://github.com/NOKNOKSoftware/scss-web-bundler-scaffold) repo.

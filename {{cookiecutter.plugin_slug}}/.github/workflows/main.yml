@@ -10,64 +10,69 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
       # Sets vars variable for git tag and repo name
-      - name: Setup variables
+      - name: Build setup
         id: vars
         run: |
           echo ::set-output name=tagName::${GITHUB_REF#refs/*/}
           echo ::set-output name=repoName::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")
           
       # Setup Node JS Environment to use gulp
-      - name: Install NodeJS Dependencies
+      - name: Setup NodeJS
         uses: actions/setup-node@v2.1.2
         with:
           # Set always-auth in npmrc
           always-auth: false
           # Version Spec of the version to use.  Examples: 12.x, 10.15.1, >=10.15.0
-          node-version: 12.x # optional
+          node-version: 19.x # optional
           # Set this option if you want the action to check for the latest available version that satisfies the version spec
           check-latest: false # optional
 
-      # Install NodeJS Dependencies    
-      - run: npm install
+      # Install NodeJS dependenciess
+      - name: Install NodeJS dependencies
+        run: npm install
+      
+      - run: gulp install
 
-      # Build Project Assets
-      - name: Build Plugin Assets
-        run: |
-          gulp build
+      # Running gulp build
+      - name: Build CSS & JS
+        run: gulp build
 
-      # Node Prune (Production)
-      - name: Node Prune for Production
-        run: |
-          npm prune --production 
-
-      # Cache Composer Dependencies for faster builds
-      - name: Cache Composer dependencies
+      # Cache composer dependencies
+      - name: Setup composer cache
         uses: actions/cache@v2
         with:
           path: /tmp/composer-cache
           key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
-      # Install Composer Environment
-      - name: Install Composer
-        uses: php-actions/composer@v5
+
+      # Setup composer
+      - name: Install PHP dependencies
+        uses: php-actions/composer@v6
         with:
           ssh_key: ${{ secrets.NOKNOK_DEPLOY_RSA }}
           ssh_key_pub: ${{ secrets.NOKNOK_DEPLOY_RSA_PUB }}
-          php_version: 7.4
-          with: composer --no-dev install
+          php_version: 8.0
+          
 
       # Create the plugin zipfile
-      - name: Create Theme/Plugin zipfile
-        run: |
-          shopt -s extglob
-          mkdir ${{ steps.vars.outputs.repoName }}
-          sudo mv !(.|..|${{ steps.vars.outputs.repoName }}|.git*|composer.*|gulpfile.js|gulpsetup.js|package*|scoper.inc.php) ./${{ steps.vars.outputs.repoName }}/
-          zip -qq -r ${{ steps.vars.outputs.repoName }}.zip ./${{ steps.vars.outputs.repoName }}
+      - name: Create plugin zipfile
+        run: gulp pack
+
+      # Create Release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: ${{ contains( github.ref, 'pre' ) }}
+
 
       # Create Release
       - name: Create Release
@@ -89,7 +94,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./${{ steps.vars.outputs.repoName }}.zip
+          asset_path: {%- endraw -%}./{{cookiecutter.plugin_slug}}{%- raw -%}.zip
           asset_name: ${{ steps.vars.outputs.repoName }}-${{ steps.vars.outputs.tagName }}.zip
           asset_content_type: application/zip
 {%- endraw -%}

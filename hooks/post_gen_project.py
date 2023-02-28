@@ -1,4 +1,10 @@
 import subprocess
+import requests
+
+phar_download = 'https://github.com/coenjacobs/mozart/releases/download/0.7.1/mozart.phar'
+r = requests.get(phar_download, allow_redirects=True)
+open('mozart.phar', 'wb').write(r.content)
+
 
 subprocess.run( 'npm update', shell=True, check=True )
 

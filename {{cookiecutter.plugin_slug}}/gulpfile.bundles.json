@@ -1,0 +1,10 @@
+{
+    "packages": [
+        "{{cookiecutter.plugin_slug}}-admin",
+        "{{cookiecutter.plugin_slug}}"
+    ],
+    "scss": [
+        "{{cookiecutter.plugin_slug}}-admin",
+        "{{cookiecutter.plugin_slug}}"
+    ]
+}

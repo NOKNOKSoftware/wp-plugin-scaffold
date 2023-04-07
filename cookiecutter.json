@@ -6,31 +6,10 @@
     "author_name": "NOKNOK Studios",
     "author_uri": "https://noknokstudios.com",
     "text_domain": "plugin-scaffold",
+    "php_version": "7.4",
     "constant_prefix": "WP_PLUGIN_SCAFFOLD",
     "function_prefix": "ps",
-    "github_plugin_uri": "",
-    "use_prefixer": 1,
-    "prefixer_namespace": "PluginScaffoldLibs",
-    "sass_projects": {
-        "frontend": {
-            "hooks": [ "wp_enqueue_scripts" ],
-            "depends": []
-        },
-        "backend": {
-            "hooks": [ "admin_enqueue_scripts" ],
-            "depends": []
-        }
-    },
-    "js_projects": {
-        "frontend": {
-            "hooks": [ "wp_enqueue_scripts" ],
-            "depends": [ "jquery" ],
-            "footer": true
-        },
-        "backend": {
-            "hooks": [ "admin_enqueue_scripts" ],
-            "depends": [ "jquery" ],
-            "footer": true
-        }
-    }
+    "github_plugin_url": "",
+    "frontend_scripts_jsx_scheme": ["none", "react", "preact", "wp-element"],
+    "admin_scripts_jsx_scheme": ["none", "react", "preact", "wp-element"]
 }

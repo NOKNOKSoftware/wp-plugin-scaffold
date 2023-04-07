@@ -4,51 +4,56 @@ const git                   = require( 'gulp-git' );
 const bump                  = require( 'gulp-bump' );
 const filter                = require( 'gulp-filter' );
 const shell                 = require( 'gulp-shell' );
+const fetch                 = require( 'node-fetch' );
 const AdmZip                = require( 'adm-zip' );
 const fs                    = require( 'fs' );
-const wpPot                 = require( 'gulp-wp-pot' );
-const gettext               = require( 'gulp-gettext' );
 
 const { task, parallel }    = gulp;
 const { glob }              = require( 'glob' );
 
-// Load Typescript & SCSS bundles
+var config = {}
+
+try {
+    config = require( './gulpfile.config' )
+}
+catch( e ) {}
 
 
 /** ----------------------------------------------------------------------------------------
  * 
- *  External Build & Watch Packages
+ *  Build Scripts
  * 
  * -------------------------------------------------------------------------------------- */
 
-const bundles               = JSON.parse( fs.readFileSync( 'gulpfile.bundles.json' ) );
+const PACKAGE_PROJECTS = [
+    '{{cookiecutter.plugin_slug}}-scripts'
+];
 
-// Map in external build / watch js
-bundles.packages.forEach( name => {
+PACKAGE_PROJECTS.forEach( name => {
     
     // Build task
-    task( 'build:script:' + name, shell.task([
+    task( 'build:' + name, shell.task([
         'gulp build'
     ], {
         cwd: './packages/' + name + '/'
     }) );
 
     // Watch task
-    task( 'watch:script:' + name, shell.task([
+    task( 'watch:' + name, shell.task([
         'gulp watch'
     ], {
         cwd: './packages/' + name + '/'
     }) );
 
     // Install task
-    task( 'install:script:' + name, shell.task([
+    task( 'install:' + name, shell.task([
         'npm install'
     ], {
         cwd: './packages/' + name + '/'
     }) );
 
     // Update task
-    task( 'update:script:' + name, shell.task([
+    task( 'update:' + name, shell.task([
         'npm update'
     ], {
         cwd: './packages/' + name + '/'
@@ -56,38 +61,57 @@ bundles.packages.forEach( name => {
 
 } );
 
-// Map in external build / watch css
-bundles.scss.forEach( name => {
-    
-    // Build task
-    task( 'build:scss:' + name, shell.task([
-        'gulp build'
-    ], {
-        cwd: './assets/scss/' + name + '/'
-    }) );
 
-    // Watch task
-    task( 'watch:scss:' + name, shell.task([
-        'gulp watch'
-    ], {
-        cwd: './assets/scss/' + name + '/'
-    }) );
+/** ----------------------------------------------------------------------------------------
+ * 
+ *  Build Sass Bundle
+ * 
+ * -------------------------------------------------------------------------------------- */
 
-    // Install task
-    task( 'install:scss:' + name, shell.task([
-        'npm install'
-    ], {
-        cwd: './assets/scss/' + name + '/'
-    }) );
+const SASS_SRC = [
+    './assets/scss/*.scss',
+    './assets/scss/**/*.scss',
+];
 
-    // Update task
-    task( 'update:scss:' + name, shell.task([
-        'npm update'
-    ], {
-        cwd: './assets/scss/' + name + '/'
-    }) );
 
-} );
+function remoteBuild( url, auth ) {
+    return ( cb ) => {
+
+        if( !config.remoteBuildEnabled ) {
+            console.log( 'Skipping remote scss build as remote build is not configured.' )
+            cb();
+            return;
+        }
+
+        var body = JSON.stringify( {
+            'auth': auth
+        } );
+
+        process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
+        
+        fetch( url, {
+            method: 'post',
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            body
+        } )
+        .then( resp => resp.json() )
+        .then( data => {
+
+            if( data.success ) {
+                cb();
+                return;
+            }
+
+            cb( data.data.error );
+        } );
+    }
+}
+
+task( 'build:css', remoteBuild( config?.remoteBuildUrl, config?.remoteBuildAuth ) ); // false = all modules
+task( 'watch:css', () => gulp.watch( SASS_SRC, parallel( 'build:css' ) ) );
+
 
 
 /** ----------------------------------------------------------------------------------------
@@ -100,9 +124,8 @@ const VERSION_FILES = [
     'version.php',
     'package.json',
     'package-lock.json',
-    '{{cookiecutter.plugin_slug}}-plugin.php'
+    'style.css'
 ];
-
 
 function bumpVersion( importance, commit, versionFiles ) {
 
@@ -119,7 +142,7 @@ function bumpVersion( importance, commit, versionFiles ) {
 
     if( commit ) {
         // commit the changed version number
-        task = task.pipe( git.commit( 'Bumped theme version (' + importance + ')') );
+        task = task.pipe( git.commit( 'Bumped plugin version (' + importance + ')') );
     }
 
     // read only one file to get the version number
@@ -134,7 +157,6 @@ function bumpVersion( importance, commit, versionFiles ) {
 
     return task;
 }
-
 
 task( 'prerelease',       () => bumpVersion( 'prerelease', true, VERSION_FILES ) );
 task( 'prerelease:nogit', () => bumpVersion( 'prerelease', false, VERSION_FILES ) );
@@ -160,25 +182,22 @@ task( 'premajor:nogit',   () => bumpVersion( 'premajor', false, VERSION_FILES ) 
  *  Packs current repository into zip file with only dist files
  * 
  * -------------------------------------------------------------------------------------- */
-
-
 const PACK_GLOBS = [ 
-    'assets/!(scss)/**',
+    'assets/',
+    'includes/',
+    'node_modules/bootstrap',
+    'node_modules/swiper',
+    'partials/',
     'src/',
+    'templates/',
     'vendor/',
-    'classes/',
+    'woocommerce/',
     '*.php',
     'style.css',
     'screenshot.png'
-].concat( 
-    ...bundles.packages.map( project => {
-        return 'packages/' + project + '/+(dist|src)'
-    } ) 
-.concat( 
-    ...bundles.scss.map( project => {
-        return 'assets/scss/' + project + '/+(dist|src)'
-    } ) 
-));
+].concat( ...PACKAGE_PROJECTS.map( project => {
+    return 'packages/' + project + '/+(dist|src)'
+} ) );
 
 gulp.task( 'pack', ( cb ) => {
 
@@ -223,89 +242,25 @@ gulp.task( 'pack', ( cb ) => {
 
 /** ----------------------------------------------------------------------------------------
  * 
- *  Generate translations template wp-pot
- * 
- * -------------------------------------------------------------------------------------- */
-
-
-const TEXT_DOMAIN             = '{{cookiecutter.text_domain}}';
-const LANGUAGES_TEMPLATE_FILE = 'languages/{{cookiecutter.plugin_slug}}.pot';
-
-const PHP_SRC = [
-    './*.php',
-    './**/*.php'
-];
-
-const GETTEXT_FUNCTIONS = [
-    { name: 'ps__' },
-    { name: 'ps_esc_attr__' },
-    { name: 'ps_esc_html__' },
-    { name: 'ps_e' },
-    { name: 'ps_esc_attr_e' },
-    { name: 'ps_esc_html_e' },
-    { name: 'ps__x', context: 2 },
-    { name: 'ps_ex', context: 2 },
-    { name: 'ps_esc_attr_x', context: 2 },
-    { name: 'ps_esc_html_x', context: 2 },
-    { name: 'ps_n', plural: 2, context: 4 },
-    { name: 'ps_nx', plural: 2, context: 4 }
-]
-
-gulp.task( 'build:wp-pot', () => {
-    return gulp.src( PHP_SRC )
-        .pipe( wpPot( { 
-            // domain: '', 
-            gettextFunctions: GETTEXT_FUNCTIONS 
-        } ) )
-        .pipe( gulp.dest( LANGUAGES_TEMPLATE_FILE ) );
-} );
-
-
-gulp.task( 'watch:wp-pot', () => gulp.watch( PHP_SRC, parallel( 'build:wp-pot' ) ) );
-
-
-/** ----------------------------------------------------------------------------------------
- * 
- *  Compile translations (.po files)
- * 
- * -------------------------------------------------------------------------------------- */
-
-const LANGUAGES_SRC = 'languages/*.po';
-const LANGUAGES_DEST = 'lanuages';
-
-gulp.task( 'build:gettext', () => {
-    return gulp.src( LANGUAGES_SRC )
-        .pipe( gettext() )
-        .pipe( gulp.dest( LANGUAGES_DEST ) );
-} );
-
-
-gulp.task( 'watch:gettext', () => gulp.watch( LANGUAGES_SRC, parallel( 'build:gettext' ) ) );
-
-
-
-/** ----------------------------------------------------------------------------------------
- * 
  *  Grouped tasks
  * 
  * -------------------------------------------------------------------------------------- */
 
 gulp.task( 'build', gulp.parallel( [ 
-    ...bundles.packages.map( name => 'build:script:' + name ),
-    ...bundles.scss.map( name => 'build:scss:' + name ) 
+    'build:css', 
+    ...PACKAGE_PROJECTS.map( name => 'build:' + name ) 
 ] ) );
 
 gulp.task( 'watch', gulp.parallel( [ 
-    ...bundles.packages.map( name => 'watch:script:' + name ),
-    ...bundles.scss.map( name => 'watch:scss:' + name ) 
+    'watch:css',
+    ...PACKAGE_PROJECTS.map( name => 'watch:' + name ) 
 ] ) );
 
 gulp.task( 'install', gulp.parallel( [ 
-    ...bundles.packages.map( name => 'install:script:' + name ),
-    ...bundles.scss.map( name => 'install:scss:' + name ) 
+    ...PACKAGE_PROJECTS.map( name => 'install:' + name ) 
 ] ) );
 
 gulp.task( 'update', gulp.parallel( [ 
-    ...bundles.packages.map( name => 'update:script:' + name ),
-    ...bundles.scss.map( name => 'update:scss:' + name ) 
+    ...PACKAGE_PROJECTS.map( name => 'update:' + name ) 
 ] ) );
+

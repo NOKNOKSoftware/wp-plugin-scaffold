@@ -4,3 +4,6 @@ node_modules/
 vendor/
 build/
 languages/*.mo
+classes/
+src/Dependencies
+dist/
